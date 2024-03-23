@@ -13,29 +13,30 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
-resource "aws_vpc" "vpc" {
-  cidr_block = "10.0.0.0/16"
+resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
 
   tags = {
-    Name = "chapter-1"
+    Name = var.tag_name
   }
 }
 
-resource "aws_subnet" "subnet" {
-  vpc_id     = aws_vpc.vpc.id
+resource "aws_subnet" "private" {
+  vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
 
   tags = {
-    Name = "chapter-1"
+    Name = var.tag_name
   }
 }
 
 resource "aws_instance" "instance" {
   ami           = "ami-0eba6c58b7918d3a1"
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.subnet.id
+  subnet_id     = aws_subnet.private.id
 
   tags = {
-    Name = "chapter-1"
+    Name = var.tag_name
   }
 }
