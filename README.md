@@ -1,4 +1,4 @@
-# ec2-instance-managed-by-ssm
+# ec2-instance-managed-by-ssm-with-terraform
 
 -   SSM で管理するプライベートネットワークのインスタンスを作成する
 
