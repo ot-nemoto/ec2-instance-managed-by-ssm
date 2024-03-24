@@ -13,6 +13,9 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
+################################################################################
+# Networking
+################################################################################
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
@@ -46,6 +49,36 @@ resource "aws_vpc_endpoint" "ssm" {
   }
 }
 
+resource "aws_vpc_endpoint" "ec2messages" {
+  vpc_id              = aws_vpc.main.id
+  subnet_ids          = [aws_subnet.private.id]
+  service_name        = "com.amazonaws.ap-northeast-1.ec2messages"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  security_group_ids = [
+    aws_security_group.vpc_endpoint.id,
+  ]
+
+  tags = {
+    Name = var.tag_name
+  }
+}
+
+resource "aws_vpc_endpoint" "ssmmessages" {
+  vpc_id              = aws_vpc.main.id
+  subnet_ids          = [aws_subnet.private.id]
+  service_name        = "com.amazonaws.ap-northeast-1.ssmmessages"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  security_group_ids = [
+    aws_security_group.vpc_endpoint.id,
+  ]
+
+  tags = {
+    Name = var.tag_name
+  }
+}
+
 resource "aws_security_group" "vpc_endpoint" {
   vpc_id = aws_vpc.main.id
 
@@ -68,6 +101,9 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
   ip_protocol       = "-1"
 }
 
+################################################################################
+# Compute
+################################################################################
 resource "aws_instance" "instance" {
   ami                  = "ami-0eba6c58b7918d3a1"
   instance_type        = "t2.micro"
