@@ -87,7 +87,7 @@ resource "aws_security_group" "vpc_endpoint" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "https" {
+resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv4" {
   security_group_id = aws_security_group.vpc_endpoint.id
   cidr_ipv4         = aws_vpc.main.cidr_block
   ip_protocol       = "tcp"
